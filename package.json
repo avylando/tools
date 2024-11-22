@@ -1,0 +1,35 @@
+{
+  "name": "tools",
+  "version": "1.0.0",
+  "description": "My development tools",
+  "main": "index.ts",
+  "type": "module",
+  "engines": {
+    "node": "^20.0.0",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "ts": "tsc --noEmit && node --no-warnings=--no-warnings=ExperimentalWarning --loader ts-node/esm",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cli": "npm run ts ./src/cli/main.ts"
+  },
+  "keywords": [
+    "tools"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.9.1",
+    "@typescript-eslint/parser": "^8.15.0",
+    "eslint": "^9.15.0",
+    "eslint-config-htmlacademy": "^10.0.1",
+    "eslint-plugin-unicorn": "^56.0.1",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0"
+  }
+}
