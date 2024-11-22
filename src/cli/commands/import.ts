@@ -8,17 +8,17 @@ import { createFilesGetter } from "../../utils/fs.js";
 
 const program = new Command();
 const getFiles = createFilesGetter();
+const reader = new EventsReader();
 
 const importCommand = program
   .createCommand("import")
-  .argument("<directory>", "Path to the directory with .js files")
+  .argument("<inputPath>", "Path to the directory or file to read")
   .argument("<pathname>", "Path to write the .tsv file")
   .description(
     "Reads javascript file and creates new .tsv file with found GA events"
   )
-  .action(async (directory, writePathname) => {
+  .action(async (inputPath, writePathname) => {
     try {
-      const reader = new EventsReader();
       const writer = new CSVFileWriter(writePathname);
 
       const events: GaEvent[] = [];
@@ -39,8 +39,8 @@ const importCommand = program
         }
       });
 
-      const files = getFiles(directory);
-
+      const files = getFiles(inputPath);
+      console.log(files);
       files.forEach((pathname) => {
         console.log(chalk.blue(`Reading file: ${pathname}`));
         reader.read(pathname);

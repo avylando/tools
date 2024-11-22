@@ -8,8 +8,19 @@ const gaEventRegex =
 export class EventsReader extends EventEmitter {
   private CHUNK_SIZE = 16384; // 16KB
 
+  private matches: RegExpExecArray[] = [];
+  private parsedEvents: GaEvent[] = [];
+
   constructor() {
     super();
+  }
+
+  private isSameEvents(event1: GaEvent, event2: GaEvent): boolean {
+    return (
+      event1.role === event2.role &&
+      event1.category === event2.category &&
+      event1.action === event2.action
+    );
   }
 
   private parseEvent(match: RegExpExecArray): GaEvent {
@@ -24,7 +35,6 @@ export class EventsReader extends EventEmitter {
     });
 
     let data = "";
-    let gaEvents = null;
     let eventsCount = 0;
 
     readStream.on("readable", async () => {
@@ -34,20 +44,27 @@ export class EventsReader extends EventEmitter {
         chunk = readStream.read(this.CHUNK_SIZE);
       }
 
-      gaEvents = data.matchAll(gaEventRegex);
+      this.matches = Array.from(data.matchAll(gaEventRegex));
 
-      if (gaEvents) {
-        Array.from(gaEvents).forEach((match) => {
+      if (this.matches.length > 0) {
+        this.matches.forEach((match) => {
           const parsedEvent = this.parseEvent(match);
+          if (
+            this.parsedEvents.some((event) =>
+              this.isSameEvents(event, parsedEvent)
+            )
+          )
+            return;
+
+          this.parsedEvents.push(parsedEvent);
           eventsCount++;
           this.emit("event", parsedEvent);
         });
-      } else {
-        gaEvents = null;
       }
     });
 
     readStream.once("end", () => {
+      this.matches = [];
       this.emit("end", eventsCount, filename);
     });
   }
