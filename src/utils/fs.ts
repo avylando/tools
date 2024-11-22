@@ -16,6 +16,11 @@ function createFilesGetter() {
   const result: string[] = [];
 
   const get = (directory: string): string[] => {
+    if (!statSync(directory).isDirectory()) {
+      result.push(directory);
+      return result;
+    }
+
     // get all 'files' in this directory
     const all = readdirSync(directory);
 
