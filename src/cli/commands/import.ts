@@ -13,7 +13,7 @@ const reader = new EventsReader();
 const importCommand = program
   .createCommand("import")
   .argument("<inputPath>", "Path to the directory or file to read")
-  .argument("<pathname>", "Path to write the .tsv file")
+  .argument("<outputPath>", "Path to write the .csv file")
   .description(
     "Reads javascript file and creates new .tsv file with found GA events"
   )
